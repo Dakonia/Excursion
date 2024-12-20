@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/css/client/client.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+</head>
+{% include 'base/header.html' %}
+<body>
+    <div class="search-cont">
+        <div class="search-text">
+            Поиск лучшего варианта для Вас
+        </div>
+        <div class="sun-img">
+            <img src="../static/media/client/sun.svg" alt="sun">
+        </div>
+        <div class="block-search">
+            <div class="search-place">
+                <div class="where-block">
+                    <div class="text-where">
+                        Куда
+                    </div>
+                    <div class="input-where">
+                        <input type="text" id="where-input" placeholder="Поис места или мероприятия">
+                    </div>
+                </div>
+                <div class="line-where"></div>
+                <div class="when-block" style="margin-left: 30px;">
+                    <div class="text-where">
+                        Когда
+                    </div>
+                    <div class="input-where">
+                        <input type="text" id="where-input" placeholder="Выберите даты">
+                    </div>
+                </div>
+                <div class="search-img">
+                    <img src="../static/media/client/search.svg" alt="search">
+                </div>
+            </div>
+            <div class="search-boxs">
+                <div class="box-ser">
+                    <form class="boxs">
+                        <input id="return-place" type="checkbox">
+                        <label for="return-place" class="promo-label">Вернуться в тоже место</label>
+                    </form>
+                </div>
+                <div class="box-ser">
+                    <form class="boxs">
+                        <input id="has-promo" type="checkbox">
+                        <label for="has-promo" class="promo-label">Есть промокод</label>
+                    </form>
+                </div>
+                <div class="box-ser">
+                    <form class="boxs">
+                        <input id="rent-daily" type="checkbox">
+                        <label for="rent-daily" class="promo-label">Арендовать на сутки</label>
+                    </form>
+                </div>
+            </div>            
+        </div>
+    </div>
+    <div class="block-client">
+        <div class="saidebar-client">
+            <form class="filter-form" method="GET">
+              <div class="filter-section">
+                <h3>Количество мест</h3>
+                <label><input type="checkbox" name="seats" value="до 10"> До 10</label>
+                <label><input type="checkbox" name="seats" value="10-20"> От 10 до 20</label>
+                <label><input type="checkbox" name="seats" value="20-30"> От 20 до 30</label>
+                <label><input type="checkbox" name="seats" value="30-45"> От 30 до 45</label>
+                <label><input type="checkbox" name="seats" value="45-60"> От 45 до 60</label>
+                <label><input type="checkbox" name="seats" value="60+"> Более 60</label>
+              </div>
+              <div class="filter-section">
+                <h3>Стоимость</h3>
+                <div class="price-range">
+                    <div class="range-price">
+                        <span class="start-price">2000 ₽</span>
+                        — 
+                        <span class="end-price">30000 ₽</span>
+                    </div>
+                    <div class="range-slider">
+                        <input 
+                            type="range" 
+                            name="price_min" 
+                            min="2000" 
+                            max="30000" 
+                            step="100" 
+                            value="2000" 
+                            class="range-input range-min">
+                        <input 
+                            type="range" 
+                            name="price_max" 
+                            min="2000" 
+                            max="30000" 
+                            step="100" 
+                            value="30000" 
+                            class="range-input range-max">
+                        <div class="range-track"></div>
+                    </div>
+                </div>
+            </div>
+              <div class="filter-section">
+                <h3>Виды автобусов</h3>
+                <label><input type="checkbox" name="bus-type" value="minibus"> Микроавтобус</label>
+                <label><input type="checkbox" name="bus-type" value="minivan"> Минивен</label>
+                <label><input type="checkbox" name="bus-type" value="bus"> Автобус</label>
+                <label><input type="checkbox" name="bus-type" value="long_bus"> Дальнего следования</label>
+                <label><input type="checkbox" name="bus-type" value="double_bus"> Двухэтажные</label>
+            </div>
+
+            <div class="filter-section">
+                <h3>Рейтинг компании</h3>
+                <label><input type="checkbox" name="rating" value="5"> Только 5 звезд</label>
+                <label><input type="checkbox" name="rating" value="4+"> 4 и выше</label>
+                <label><input type="checkbox" name="rating" value="3+"> 3 и выше</label>
+                <label><input type="checkbox" name="rating" value="2-"> Меньше 2 звезд</label>
+              </div>
+      <div class="filter-section">
+        <h3>Длительная аренда</h3>
+        <label><input type="checkbox" name="long-term" value="да"> Да</label>
+        <label><input type="checkbox" name="long-term" value="нет"> Нет</label>
+      </div>
+    <div class="filter-buttons">
+        <button type="reset" class="reset-button">Сбросить</button>
+        <button type="submit" class="apply-button">Применить</button>
+      </div>
+    </form>
+  </div>
+  <script src="../static/js/client/client.js"></script>
+  <div class="main-client">
+    {% for bus in buses %}
+    <div class="client-bus">
+        <div class="bus-card">
+            <div class="bus-top-card">
+                <div class="bus-image">
+                    {% if bus.image %}
+                        <img src="{{ bus.image.url }}" alt="{{ bus.name }}">
+                    {% else %}
+                        <img src="../static/media/company/bus.jpg" alt="Нет изображения">
+                    {% endif %}
+                </div>
+                <div class="bus-info">
+                    <div class="bus-name">{{ bus.name }}</div>
+                    <div class="bus-desc">{{ bus.description|default:"Нет описания" }}</div>
+                    <div class="bus-seats">
+                        <div>Мест:</div> 
+                        <div class="bus-seats-numb">{{ bus.seats }}</div>
+                    </div>
+                    <div class="bus-reliability">
+                        <div>Надежность:</div>
+                        <div class="bus-rel-black">Надежный транспорт</div>
+                    </div>
+                    <div class="bus-safety">
+                        <div>Системы безопасности:</div>
+                        <div class="bus-safety-black">
+                            {% for safety in bus.safety.all %}
+                                {{ safety.name }}
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="bus-features">
+                        <div>Удобства</div>
+                        <div class="bus-features-black">
+                            {% for feature in bus.features.all %}
+                                {% if feature.images %}
+                                    <div>
+                                        <img src="{{ feature.images.url }}" alt="{{ feature.name }}">
+                                    </div>
+                                {% endif %}
+                                <div>{{ feature.name }}</div>
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="rules-bus">Правила поведения в транспорте</div>
+                </div>
+            </div>
+            <div class="bus-bootom-card">
+                <div class="block-func">
+                    <div class="funct-text">
+                        Дополнительные услуги
+                    </div>
+                    <div class="block-all-func">
+                        {% for func in bus.functionality.all %}
+                            <form class="func-bus">
+                                <span>{{ func.name }}</span>
+                            </form>
+                        {% empty %}
+                            <div class="func-bus">Нет дополнительного функционала</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="bus-price">
+                    <div class="text-price">Цена за 1 день:</div>
+                    <div class="pirce-bus">{{ bus.price_per_day }} ₽</div>
+                </div>
+                <div class="but-bus">
+                    <button id="book-bus" class="book-bus" data-bus-id="{{ bus.id }}">Рассчитать стоимость</button>
+                </div>
+            </div>
+            <div class="line-bottom"></div>  
+            <div class="block-tk-bus">
+                {% if bus.transport_company %}
+                    <div class="tk-logo">
+                        {% if bus.transport_company.image %}
+                            <img src="{{ bus.transport_company.image.url }}" alt="{{ bus.transport_company.company_name }}">
+                        {% else %}
+                            <img src="../static/media/header/avatar.png" alt="Логотип отсутствует">
+                        {% endif %}
+                    </div>
+                    <div class="name-tk-block">
+                        <div class="tk-tk">
+                        <div class="tk-name">
+                            {{ bus.transport_company.company_name }}
+                        </div>
+                        <div class="good-tk">
+                            <img src="../static/media/client/like.svg" alt="like">
+                            <div class="good-text">
+                                Хорошая компания
+                            </div>
+                        </div>
+                    </div>
+                        <div class="rewiew-bus">
+                            <div class="name-rew">Рейтинг:</div>
+                            <div class="rew-full">
+                                <div class="img-rew">
+                                    <img src="../static/media/client/ful-star.png" alt="star">
+                                </div>
+                                <div class="full-rew">
+                                    <div class="mid-rew">{{ bus.avg_rating|default:"0" }}</div>
+                                    <div>/</div>
+                                    <div class="amaount-rew">{{ bus.reviews_count }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                    
+                {% else %}
+                    <div class="no-company">ТК не указана</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+    <div id="order-modal" class="modal">
+        <div class="modal-order">
+            <div class="order-text">Бронирование заказа</div>
+            <div class="order-info">
+                <div class="order-info-left">
+            <div id="bus-name-container">
+                <span id="bus-name" class="order-name-bus"></span>
+            </div>
+            <form id="order-form">
+                <div class="form-group">
+                    <label for="order-date">Дата заказа</label>
+                    <input type="text" id="order-date" name="order_date" placeholder="Выберите дату" required>
+                </div>
+                <div class="form-groups">
+                    <label for="order-description">Описание заказа</label>
+                    <textarea id="order-description" placeholder="Описание заказа" required></textarea>
+                </div>
+            </div>
+                <div class="right-order-info">
+                    <div id="bus-info-container" class="bus-info-container">
+                        <div id="bus-image-container">
+                            <img id="bus-image" src="" alt="Изображение автобуса">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="but-add-order">
+                <button type="submit">Ожидать подтверждения</button>
+            </form>
+            <button id="close-modal" class="close-order">Закрыть</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../static/js/client/order.js"></script>
+</body>
+</html>

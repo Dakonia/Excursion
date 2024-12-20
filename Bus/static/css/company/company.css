@@ -1,0 +1,543 @@
+@font-face {
+    font-family: Mont;
+    src: url(../../fonts/Montserrat-Regular.ttf);
+}
+@font-face {
+    font-family: Forum;
+    src: url(../../fonts/Forum-Regular.ttf);
+}
+@font-face {
+    font-family: Actay-bold;
+    src: url(../../fonts/ActayWide-Bold.otf);
+}
+@font-face {
+    font-family: Actay;
+    src: url(../../fonts/Actay-Regular.otf);
+}
+@font-face {
+    font-family: Actay-ital;
+    src: url(../../fonts/Actay-RegularItalic.otf);
+}
+body{
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.block-company{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    margin: 0;
+}
+.tab-content {
+    display: none;
+    padding: 20px;
+    height: 100vh;
+    width: 100%;
+    font-family: Actay;
+}
+.tab-content.active {
+    display: block;
+}
+.block-saide-bar{
+    display: grid;
+    gap: 20px;
+    text-align: center;
+}
+
+.block-saide-bar .info-saide {
+    font-family: Actay;
+    font-size: 18px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-left: 4px solid transparent;    
+}
+
+.block-saide-bar .info-saide:hover {
+    background-color: #008EF1;
+    color: white;
+    border-radius: 8px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.saide-bar{
+    border-radius: 10px;
+    width: 240px;
+    height: 500px;
+    background-color: #F5F5F5;
+   
+    margin-top: 30px;
+    border: 2px solid black;
+}
+.text-bar{
+    font-family: Actay-bold;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+.info-transport-company{
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+}
+.line-hr{
+    margin-top: 20px;
+    border: none;
+    border-top: 2px solid #ddd;
+	border-bottom: 2px solid #000;
+	background: #008EF1;
+    height: 2px;
+}
+.avatar-info{
+    margin-left: 20px;
+    width: 50px;
+    height: 50px;
+}
+.avatar-info img{
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    border-radius: 50px;
+}
+.info-profile{
+    margin-left: 20px;
+    width: 140px;
+    height: 60px;
+}
+.review-saide{
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+.rewiew-inf{
+    font-family: Actay;
+    font-size: 17px;
+    margin-left: 5px;
+}
+.rewiew-max{
+    font-family: Actay;
+    font-size: 17px;
+
+}
+.name-trans{
+    font-family: Actay;
+    font-size: 17px;
+    text-align: center;
+}
+
+.content{
+    margin-right: 30px;
+}
+.name-block{
+    font-size: 26px;
+    font-family: Mont;
+    margin-left: 30px;
+}
+
+/* Стили для списка автобусов */
+.bus-list{
+    gap: 20px;
+    display: grid;
+}
+.bus{
+    display: flex;
+    margin-left: 30px;
+    width: 1000px;
+    height: 250px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+.bus-images img{
+    border-radius: 10px;
+    width: 270px;
+    height: 90%;
+    margin: 10px;
+}
+.add-bus-button{
+    width: 200px;
+    height: 40px;
+    background-color: #008EF1;
+    border: none;
+    border-radius: 10px;
+    font-family: Actay;
+    color: white;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-left: 30px;
+    cursor: pointer;
+    align-items: center;
+}
+.add-bus-button:hover {
+    background-color: #1e58ebd6;
+}
+
+.bus-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bus-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 600px;
+}
+
+.bus-name {
+    font-size: 22px;
+    font-family: Actay-bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+.bus-desc {
+    display: -webkit-box;
+    display: box; 
+    -webkit-line-clamp: 5; 
+    line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    box-orient: vertical; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: #555;
+    font-family: Actay;
+}
+.bus-seats{
+    font-size: 16px;
+    font-family: Actay;
+}
+
+.bus-price {
+    font-size: 19px;
+    font-family: Actay-ital;
+}
+.bus-feat{
+    display: flex;
+    align-items: center;
+}
+.bus-feat img{
+    width: 25px;
+}
+.bus-feat-name{
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.bus-edit{
+    margin-top: 20px;
+    margin-left: 40px;
+}
+.bus-edit img{
+    cursor: pointer;
+    margin-top: 10px;
+    width: 40px;
+}
+
+
+/* Добавление автобуса */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-add-bus {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.name-add-modal{
+    font-size: 20px;
+    font-family: Actay-bold;
+    text-align: center;
+}
+.forms-bus{
+    margin-top: 40px;
+    display: grid;
+    gap: 10px;
+}
+.add-bus-form{
+    align-items: center;
+    display: grid;
+    gap: 5px;
+}
+.add-bus-form label{
+    font-size: 18px;
+    font-family: Actay;
+}
+.add-bus-form input{
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 16px;
+}
+.add-bus-form textarea{
+    width: 680px;
+    height: 60px;
+}
+.submit-button-bus{
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #008EF1;
+    margin-top: 30px;
+    margin-left: 240px;
+    color: white;
+    font-family: Actay-bold;
+    font-size: 16px;
+    border: none;
+}
+.modal-delete-bus{
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+.delete-confirm-button{
+    width: 150px !important;
+    height: 48px !important;
+    font-family: Actay-bold;
+    background-color: red;
+    color: white;
+    border: none !important;
+    border-radius: 5px !important;
+    font-size: 17px !important;
+}
+.block-but-delete{
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    margin-left: 180px;
+    margin-top: 40px;
+}    
+
+.delete-cancel-button{
+    width: 150px !important;
+    height: 48px;
+    font-family: Actay-bold;
+    background-color: #008EF1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 17px;
+} 
+.name-bus{
+    margin-top: 30px;
+    font-size: 18px;
+    font-family: Actay;
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Заказы */
+
+.order-content{
+    display: none;
+}
+.order-content.active {
+    display: block;
+}
+
+#orders{
+    margin-left: 50px;
+}
+#history{
+    margin-left: 50px;
+}
+.block-saide-order .info-order.active {
+    align-items: center;
+    width: max-content;
+    padding: 9px;
+    background-color: #E8E8E8;
+    border-radius: 7px;
+    color: black;
+    border: 1px solid #d5d2d2;
+    cursor: pointer;
+}
+.info-order{
+    font-family: Actay-bold;
+    font-size: 16px;
+}
+
+.block-saide-order{
+    border: 2px solid black;
+    display: flex;
+    justify-content: space-around;
+    background-color: #F5F5F5;
+    width: 700px;
+    height: 40px;
+    align-items: center;
+    border-radius: 7px;
+    margin-top: 30px;
+}
+.order-card{
+    border-radius: 12px;
+    width: 818px;
+    height: auto;
+    border: 2px solid black;
+    margin: 25px;
+}
+.name-date{
+    margin-left: 30px;
+    margin-top: 20px;
+    display: flex;
+    gap: 100px;
+    align-items: center;
+}
+.order-name{
+    gap: 10px;
+    display: flex;
+    font-family: Actay;
+    font-size: 16px;
+}
+.order-date{
+    gap: 10px;
+    display: flex;
+    font-family: Actay;
+    font-size: 16px;
+}
+.db-t{
+    font-family: Actay-bold;
+    font-size: 16px;
+}
+.order-desc{
+    margin-top: 20px;
+    display: block;
+}
+.order-desc-title{
+    font-family: Actay-bold;
+    font-family: 16px;
+    text-align: center;
+}
+.order-desc-text{
+    margin-top: 10px;
+    margin-left: 60px;
+    height: auto;
+    width: 660px;
+    border: 1px solid #A6A6A6;
+    border-radius: 7px;
+    padding: 20px;
+}
+
+.order-confirm{
+    margin-top: 20px;
+    display: grid;
+}
+.order-confirm label{
+    font-size: 16px;
+    font-family: Actay-bold;
+    text-align: center;
+}
+.order-confirm input{
+    width: 660px;
+    height: auto;
+    padding: 10px;
+    border: 1px solid #9E9E9E;
+    border-radius: 10px;
+    margin-left: 70px;
+    margin-top: 10px;
+}
+.order-confirm-but{
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+.order-confirm-but button{
+    width: 150px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: Actay;
+    cursor: pointer;
+}
+.accept-but-order{
+    background-color: #008EF1;
+    color: white;
+}
+.refusal-but{
+    color: white;
+    background-color: #A6A6A6;
+}
+
+
+/* Отзывы */
+#reviews{
+    margin-left: 50px;
+}
+.stars-rew{
+    margin-top: 0px;
+    margin-left: 0px;
+    display: flex;
+}
+.out-mesege{
+    margin-left: 30px;
+    margin-top: 20px;
+}
+.out-mesege-title{
+    font-size: 16px;
+    font-family: Actay-ital;
+    color: #A6A6A6;
+}
+.out-mesege textarea{
+    width: 600px;
+    margin-left: 60px;
+}
+.mes-but{
+    margin-left: 40%;
+    padding-bottom: 20px;
+}
+.mes-but button{
+    width: 150px;
+    height: 40px;
+    background-color: #008EF1;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-family: Actay;
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Company</title>
+    <link rel="stylesheet" href="../static/css/company/company.css">
+    {% load custom_tags %}
+</head>
+{% include 'base/header.html' %}
+<body>
+    <div class="block-company">
+        <div class="saide-bar">
+            <div class="text-bar">Транспортная компания</div>
+            <div class="info-transport-company">
+                <div class="avatar-info">
+                    {% if avatar %}
+                    <img src="{{ avatar }}" alt="Profile">
+                    {% else %}
+                    <img src="../static/media/header/avatar.png" class="Profile">
+                    {% endif %}
+                </div>
+                <div class="info-profile">
+                    <div class="name-trans">
+                        <b>{{ name }}</b>
+                    </div>
+                    <div class="review-saide">
+                        <img src="../static/media/company/star.svg">
+                        <div class="rewiew-inf">{{ avg_rating|default:"Нет отзывов" }}</div>
+                        <div>/</div>
+                        <div class="rewiew-max">{{ reviews_count }}</div>
+                    </div>
+                </div>
+            </div>
+            <hr class="line-hr">
+            <div class="block-saide-bar">
+                <div class="info-saide" data-tab="buses">Мои автобусы</div>
+                <div class="info-saide" data-tab="orders">Заказы</div>
+                <div class="info-saide" data-tab="history">История заказов</div>
+                <div class="info-saide" data-tab="reviews">Отзывы</div>
+            </div>
+        </div>
+        <div class="content">
+            <div id="buses" class="tab-content active">
+                <div class="name-block">Мои автобусы</div>
+                <div class="bus-list">
+                <button id="add-bus-btn" class="add-bus-button">Добавить автобус</button>
+                {% for bus in user.company_profile.buses.all %}
+                <div class="bus" data-id="{{ bus.id }}">
+                    <div class="bus-images">
+                        {% if bus.image %}
+                        <img src="{{ bus.image.url }}" alt="Bus Image">
+                        {% else %}
+                        <img src="../static/media/company/bus.jpg">
+                        {% endif %}
+                    </div>
+                    <div class="bus-info">
+                        <div class="bus-name">{{ bus.name }}</div>
+                        <div class="bus-desc">{{ bus.description }}</div>
+                        <div class="bus-seats">Количество мест: {{ bus.seats }}</div>
+                        <div class="bus-price">Цена за день: {{ bus.price_per_day }}</div>
+                        <div class="bus-feat">Дополнительные функции: 
+                            <div class="bus-feat-name">
+                            {% if bus.features.exists %}
+                                {% for feature in bus.features.all %}
+                                    {% if feature.images %}
+                                    <img src="{{ feature.images.url }}" alt="{{ feature.name }}">
+                                    {% endif %}
+                                    {{ feature.name }}
+                                {% endfor %}
+                            {% else %}
+                                Нет дополнительных функций
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-edit">
+                        <div class="full-info-bus">
+                            <img src="../static/media/company/info.png" alt="Info">
+                        </div>
+                        <div class="edit-info-bus">
+                            <img src="../static/media/company/edit.png" alt="Edit">
+                        </div>
+                        <div class="delete-bus">
+                            <img src="../static/media/company/delete.png" alt="Delete">
+                        </div>
+                    </div>
+                </div>           
+                {% endfor %}
+                </div>
+            </div>
+            <div id="delete-bus-modal" class="modal">
+                <div class="modal-delete-bus">
+                    <span class="close" id="close-delete-modal">&times;</span>
+                    <div class="name-add-modal">Удалить автобус</div>
+                    <div class="name-bus">Вы уверены, что хотите удалить автобус <span id="delete-bus-name"></span>?</div>
+                    <form id="delete-bus-form" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="block-but-delete">
+                        <button type="submit" class="delete-confirm-button">Удалить</button>
+                        <button type="button" class="delete-cancel-button" id="cancel-delete">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="edit-bus-modal" class="modal">
+                <div class="modal-add-bus">
+                    <span id="close-edit-modal" class="close">&times;</span>
+                    <div class="name-add-modal">Редактировать автобус: <span id="edit-bus-name-display"></span></div>
+                    <form id="edit-bus-form" action="{% url 'edit_bus' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="forms-bus">
+                        <input type="hidden" id="edit-bus-id" name="bus_id">
+                        <div class="add-bus-form">
+                            <label for="edit-bus-name">Название автобуса:</label>
+                            <input type="text" id="edit-bus-name" name="name" required>
+                        </div>
+                        <div class="add-bus-form">
+                            <label for="edit-bus-seats">Количество мест:</label>
+                            <input type="number" id="edit-bus-seats" name="seats" required>
+                        </div>
+                        <div class="add-bus-form">
+                            <label for="edit-bus-price">Цена за день:</label>
+                            <input type="number" step="0.01" id="edit-bus-price" name="price_per_day" required>
+                        </div>
+                        <div class="add-bus-form">
+                            <label for="edit-bus-description">Описание:</label>
+                            <textarea id="edit-bus-description" name="description"></textarea>
+                        </div>
+                        <div class="add-bus-form">
+                            <label for="edit-bus-image">Фото автобуса:</label>
+                            <input type="file" id="edit-bus-image" name="image">
+                        </div>
+                        <div class="add-bus-form">
+                            <label>Дополнительные функции:</label>
+                            <div id="edit-bus-features">
+                                {% for feature in features %}
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="features" value="{{ feature.id }}">
+                                        {{ feature.name }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        </div>
+                        <button type="submit" class="submit-button-bus">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="add-bus-modal" class="modal">
+                <div class="modal-add-bus">
+                    <span id="close-modal" class="close">&times;</span>
+                    <div class="name-add-modal">Добавить автобус</div>
+                    <form action="{% url 'add_bus' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="forms-bus">
+                            <div class="add-bus-form">
+                                <label for="bus-name">Название автобуса:</label>
+                                <input type="text" id="bus-name" name="name" required>
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-seats">Количество мест:</label>
+                                <input type="number" id="bus-seats" name="seats" required>
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-price">Цена за день:</label>
+                                <input type="number" step="0.01" id="bus-price" name="price_per_day" required>
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-description">Описание:</label>
+                                <textarea id="bus-description" name="description"></textarea>
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-image">Фото автобуса:</label>
+                                <input type="file" id="bus-image" name="image">
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-type">Тип автобуса:</label>
+                                <select id="bus-type" name="type" required>
+                                    <option value="minibus">Микроавтобус</option>
+                                    <option value="minivan">Минивен</option>
+                                    <option value="bus">Автобус</option>
+                                    <option value="double_bus">Двухэтажный</option>
+                                    <option value="long_bus">Дальнего следования</option>
+                                </select>
+                            </div>
+                            <div class="add-bus-form">
+                                <label for="bus-long-trips">Долгие поездки и аренда:</label>
+                                <input type="checkbox" id="bus-long-trips" name="long_trips" value="True">
+                            </div>
+                            <div class="add-bus-form">
+                                <label>Удобства:</label>
+                                <div>
+                                    {% for feature in features %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="features" value="{{ feature.id }}">
+                                            {{ feature.name }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="add-bus-form">
+                                <label>Дополнительные услуги:</label>
+                                <div>
+                                    {% for functionality in functionalitys %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="functionality" value="{{ functionality.id }}">
+                                            {{ functionality }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="add-bus-form">
+                                <label>Системы безопасности:</label>
+                                <div>
+                                    {% for safety in safetys %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="safety" value="{{ safety.id }}">
+                                            {{ safety.name }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-button-bus">Добавить</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="orders" class="tab-content">
+                <div class="block-saide-order">
+                    <div class="info-order active" data-tab="expect">Ожидают подтверждения</div>
+                    <div class="info-order" data-tab="confirmed">Подвтержденые</div>
+                    <div class="info-order" data-tab="activ">Активные</div>
+                </div>
+                <div id="expect" class="order-content active">
+                    <h2>Ожидают подтверждения</h2>
+                    {% for order in pending_orders %}
+                        <div class="order-card">
+                            <div class="name-date">
+                                <div class="order-name"> Имя: <div class="db-t"> {{ order.client.name }}</div></div>
+                                <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                            </div>
+                            <div class="name-date">
+                                <div class="order-name">Автобус: <div class="db-t"> {{ order.bus.name }}</div></div>
+                            </div>
+                            <div class="name-date">
+                            <div class="order-date">Предварительная цена: <div class="db-t">{{ order.bus.price_per_day }}</div></div>
+                            </div>
+                            <div class="order-desc">
+                                <div class="order-desc-title">
+                                    Описание заказа:
+                                </div>
+                                <div class="order-desc-text">
+                                {{ order.description }}
+                                </div>
+                                </div>
+                                <div class="name-date" style="justify-content: center; margin-right: 20px;">
+                            <div class="order-name">Статус: <div class="db-t">{{ order.get_status_display }}</div></div>
+                                </div>
+                            <form method="POST" action="{% url 'confirm_order' order.id %}">
+                                {% csrf_token %}
+                                <div class=" order-confirm">
+                                <label for="full_price">Ответ на заказ:</label>
+                                <input type="text" name="full_price" id="full_price" required>
+                                <div class="order-confirm-but">
+                                <button class="accept-but-order" type="submit" name="status" value="confirmed">Подтвердить</button>
+                                <button class="refusal-but" type="submit" name="status" value="rejected">Отклонить</button>
+                                </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <p>Нет заказов.</p>
+                    {% endfor %}
+                </div>                
+                <div id="confirmed" class="order-content">
+                    <h2>Подтвержденные</h2>
+                    {% for order in confirmed_orders %}
+                        <div class="order-card">
+                            <div class="name-date">
+                                <div class="order-name"> Имя: <div class="db-t"> {{ order.client.name }}</div></div>
+                                <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                            </div>
+                            <div class="name-date">
+                                <div class="order-name">Автобус: <div class="db-t"> {{ order.bus.name }}</div></div>
+                            </div>
+                            <div class="order-desc">
+                                <div class="order-desc-title">
+                                    Описание заказа:
+                                </div>
+                                <div class="order-desc-text">
+                                {{ order.description }}
+                                </div>
+                                </div>
+                                <div class="order-desc">
+                                    <div class="order-desc-title">
+                                        Ответ на заказ:
+                                    </div>
+                                    <div class="order-desc-text">
+                                    {{ order.full_pirce }}
+                                </div>
+                                </div>
+                                <div class="name-date" style="justify-content: center; margin-right: 20px; padding-bottom: 20px;">
+                                    <div class="order-name">Статус: <div class="db-t">{{ order.get_status_display }}</div></div>
+                                </div>
+                        </div>
+                    {% empty %}
+                        <p>Нет подтвержденных заказов.</p>
+                    {% endfor %}
+                </div>
+                
+                <div id="activ" class="order-content">
+                    <h2>Активные заказы</h2>
+                    
+                    {% if active_orders %}
+                        <div class="order-list">
+                            {% for order in active_orders %}
+                                <div class="order-card">
+                                    <div class="name-date">
+                                        <div class="order-name"> Имя: <div class="db-t"> {{ order.client.name }}</div></div>
+                                        <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                                    </div>
+                                    <div class="name-date">
+                                        <div class="order-name">Заказ на автобус: <div class="db-t"> {{ order.bus.name }}</div></div>
+                                    </div>
+                                    <div class="order-desc">
+                                        <div class="order-desc-title">
+                                            Описание заказа:
+                                        </div>
+                                        <div class="order-desc-text">
+                                        {{ order.description }}
+                                        </div>
+                                        </div>
+                                        <div class="order-desc">
+                                            <div class="order-desc-title">
+                                                Ответ на заказ:
+                                            </div>
+                                            <div class="order-desc-text">
+                                            {{ order.full_pirce }}
+                                        </div>
+                                        </div>
+                                    <form method="post" action="{% url 'complete_order' order.id %}">
+                                        {% csrf_token %}
+                                        <div class="order-confirm-but">
+                                        <button type="submit" name="action" value="complete" class="accept-but-order">Завершить</button>
+                                        <button type="submit" name="action" value="cancel" class="refusal-but">Отменить</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Нет активных заказов.</p>
+                    {% endif %}
+                </div>
+                
+        </div>
+        <div id="history" class="tab-content">
+            <h2>История заказов</h2>
+            {% if completed_orders %}
+                <div class="order-list">
+                    {% for order in completed_orders %}
+                        <div class="order-card">
+                            <div class="name-date">
+                                <div class="order-name">Имя: <div class="db-t">{{ order.client.name }}</div></div>
+                                <div class="order-date">Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                            </div>
+                            <div class="name-date">
+                                <div class="order-name">Заказ на автобус: <div class="db-t">{{ order.bus.name }}</div></div>
+                            </div>
+                            <div class="name-date">
+                                <div class="order-date">Дата завершения: <div class="db-t">{{ order.updated_at }}</div></div>
+                            </div>
+                            <div class="order-desc">
+                                <div class="order-desc-title">Описание заказа:</div>
+                                <div class="order-desc-text">{{ order.description }}</div>
+                            </div>
+                            <div class="order-desc" style="padding-bottom: 20px;">
+                                <div class="order-desc-title">Ответ на заказ:</div>
+                                <div class="order-desc-text">{{ order.full_pirce }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Нет завершенных заказов.</p>
+            {% endif %}
+        </div>
+        
+            <div id="reviews" class="tab-content">
+                <h2>Отзывы</h2>
+                    <div class="block-saide-order">
+                        <div class="info-order active" data-tab="answered">Все отзывы</div>
+                        <div class="info-order" data-tab="waiting">Не отвеченые отзывы</div>
+                    </div>
+                    <div id="waiting" class="order-content">
+                        <h3>Неотвеченные отзывы</h3>
+                        {% if unanswered_reviews %}
+                            {% for review in unanswered_reviews %}
+                            <div class="reviews-all">
+                                <div class="order-card">
+                                    <div class="name-date">
+                                        <div class="order-name"">Клиент:<div class="db-t" style="padding-right: 250px;"> {{ review.order.client }}</div></div>
+                                        <div class="stars-rew">
+                                            {% for star in review.stars|range_filter %}
+                                            <div class="star-am">
+                                                <img src="../static/media/client/ful-star.png" alt="звезда" class="stars-rew">
+                                            </div>
+                                            {% endfor %}
+                                        </div>  
+                                    </div>
+                                    <div class="name-date">
+                                    <div class="order-name">Автобус:<div class="db-t">{{ review.order.bus.name }}</div></div>
+                                    </div>
+                                    <div class="name-date">
+                                        <div class="order-name">Дата заказа:<div class="db-t"> {{ review.order.date|date:"d.m.Y" }}</div></div>
+                                        <div class="order-date">Дата отзыва:<div class="db-t"> {{ review.created_at|date:"d.m.Y" }}</div></div> 
+                                    </div>
+                                    <div class="order-desc">
+                                        <div class="order-desc-title">Отзыв:</div>    
+                                        <div class="order-desc-text">{{ review.text }}</div>
+                                    </div>                                          
+                                   <!-- Форма для ответа на отзыв -->
+                                    <form method="post" action="{% url 'reply_to_review' review.id %}">
+                                        {% csrf_token %}
+                                        <div class="out-mesege">
+                                            <div class="out-mesege-title">
+                                                Ответ:
+                                            </div>
+                                        <textarea name="response" placeholder="Введите ответ компании" required></textarea>
+                                        </div>
+                                        <div class="mes-but">
+                                        <button type="submit">Ответить</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Нет неотвеченных отзывов.</p>
+                        {% endif %}
+                    </div>
+                    <div id="answered" class="order-content active">
+                        <h3>Все отзывы</h3>
+                        {% if answered_reviews %}
+                            {% for review in answered_reviews %}
+                            <div class="reviews-all">
+                                <div class="order-card">
+                                    <div class="name-date">
+                                        <div class="order-name">Клиент:<div class="db-t" style="padding-right: 250px;">{{ review.order.client }}</div></div>
+                                        <div class="stars-rew">
+                                            {% for star in review.stars|range_filter %}
+                                            <div class="star-am">
+                                                <img src="../static/media/client/ful-star.png" alt="звезда" class="stars-rew">
+                                            </div>
+                                            {% endfor %}
+                                        </div>  
+                                    </div>
+                                    <div class="name-date">
+                                        <div class="order-name">Автобус:<div class="db-t">{{ review.order.bus.name }}</div></div>
+                                    </div>
+                                    <div class="name-date">
+                                        <div class="order-name">Дата заказа:<div class="db-t">{{ review.order.date|date:"d.m.Y" }}</div></div>
+                                        <div class="order-date">Дата отзыва:<div class="db-t">{{ review.created_at|date:"d.m.Y" }}</div></div> 
+                                    </div>
+                                    <div class="order-desc">
+                                        <div class="order-desc-title">Отзыв:</div>    
+                                        <div class="order-desc-text">{{ review.text }}</div>
+                                    </div>
+                                    <div class="order-response" style="padding-bottom: 20px;">
+                                        <div class="order-desc-title">Ответ компании:</div>
+                                        <div class="order-desc-text"">{{ review.response }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Нет отвеченных отзывов.</p>
+                        {% endif %}
+                    </div>
+                    
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/company/company.js"></script>
+</body>
+</html>

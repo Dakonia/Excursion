@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="../static/css/client/profile.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    {% load custom_tags %}
+</head>
+{% include 'base/header.html' %}
+<body>
+    <div class="block-client">
+        <div class="saide-bar">
+            <div class="info-client">
+                <div class="avatar-info">
+                    {% if client.image %}
+                    <img src="{{ client.image.url }}" alt="Profile" class="avatar">
+                    {% else %}
+                    <img src="../static/media/header/avatar.png" class="avatar" alt="Default Avatar">
+                    {% endif %}   
+                </div>
+
+                <div class="text-bar">{{ client.name }}</div> <!-- Имя пользователя здесь -->
+
+                <div class="info-profile">
+                    <div class="name-client">
+                        <b>{{ name }}</b>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="block-saide-bar">
+                <div class="info-saide" data-tab="profile">Мой профиль</div>
+                <div class="info-saide" data-tab="orders">Заказы</div>
+                <div class="info-saide" data-tab="reviews">Отзывы</div>
+                <div class="info-saide" data-tab="settings">Настройки</div>
+            </div>
+        </div>
+        <div class="content-area">
+            <div id="profile" class="tab-content">
+                <h2>Персональные данные</h2>
+                <form id="profile-form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="avatar-section">
+                        <label for="avatar"></label>
+                        <div class="avatar-container">
+                            {% if client.image %}
+                                <img src="{{ client.image.url }}" alt="Аватар" class="avatar">
+                            {% else %}
+                                <img src="../static/media/header/avatar.png" alt="Нет аватара" class="avatar">
+                            {% endif %}
+                        </div>
+                        <label for="avatar" class="file-upload-label">Выберите аватар</label>
+                         <input type="file" id="avatar" name="image" style="display: none;">
+                    </div>
+                    
+        
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">Имя <span class="required">*</span></label>
+                            <input type="text" id="first_name" name="name" value="{{ client.name|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name">Фамилия</label>
+                            <input type="text" id="last_name" name="surname" value="{{ client.surname|default:'' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="middle_name">Отчество</label>
+                            <input type="text" id="middle_name" name="surname2" value="{{ client.surname2|default:'' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone_number">Номер телефона</label>
+                            <input type="tel" id="phone_number" name="number" value="{{ client.number|default:'' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Почта <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" value="{{ client.email|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthdate">Дата рождения</label>
+                            <input type="date" id="birthdate" name="birthday" value="{{ client.birthday|date:'Y-m-d'|default:'' }}">
+                        </div>                        
+                        <div class="form-group">
+                            <label>Пол</label>
+                            <div class="gender-options">
+                                <div>
+                                    <input type="radio" id="male" name="male" value="male" {% if client.male == 'male' %}checked{% endif %}>
+                                    <label for="male">Мужской</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="female" name="male" value="female" {% if client.male == 'female' %}checked{% endif %}>
+                                    <label for="female">Женский</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <button type="submit" class="submit-button">Сохранить данные</button>
+                </form>
+        
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <p class="{{ message.tags }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+        
+            <div class="payment-section">
+                <h2>Способы оплаты</h2>
+                <div class="line"></div>
+                <div class="payment-info">
+                    <span>Банковские карты</span>
+                    <img src="/static/media/client/MasterCard.png" alt="MasterCard">
+                    <img src="/static/media/client/Visa.png" alt="Visa">
+                    <img src="/static/media/client/Mir.png" alt="Мир">
+                </div>
+            </div>
+        </div>
+        </div>        
+        <div id="orders" class="tab-content">
+            <div class="block-saide-order">
+                <div class="info-order active" data-tab="expect">Подтвержденные</div>
+                <div class="info-order" data-tab="activs">Активные</div>
+                <div class="info-order" data-tab="end-order">Завершенные</div>
+            </div>
+            <h2>Заказы</h2>
+            <div id="expect" class="order-content active">
+                <h2>Подтвержденные заказы</h2>
+                {% for order in confirmed_orders %}
+                    <div class="order-card">
+                        <div class="name-date">
+                            <div class="order-name"> Имя: <div class="db-t"> {{ order.client.name }}</div></div>
+                            <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                        </div>
+                        <div class="name-date">
+                            <div class="order-name">Автобус: <div class="db-t"> {{ order.bus.name }}</div></div>
+                        </div>
+                        <div class="order-desc">
+                            <div class="order-desc-title">
+                                Описание заказа:
+                            </div>
+                            <div class="order-desc-text">
+                            {{ order.description }}
+                            </div>
+                            </div>
+                            <div class="order-desc">
+                                <div class="order-desc-title">
+                                    Ответ на заказ:
+                                </div>
+                                <div class="order-desc-text">
+                                {{ order.full_pirce }}
+                            </div>
+                            </div>
+                            <div class="name-date" style="justify-content: center; margin-right: 20px; padding-bottom: 20px;">
+                                <div class="order-name">Статус: <div class="db-t">{{ order.get_status_display }}</div></div>
+                            </div>
+                        <div class="actions">
+                            <div class="order-confirm-but">
+                            <form method="POST" action="{% url 'update_accept_client' order.id %}">
+                                {% csrf_token %}
+                                <button class="accept-but-order" type="submit" name="accept_client" value="true">Принять</button>
+                            </form>
+                            <form method="POST" action="{% url 'update_accept_client' order.id %}">
+                                {% csrf_token %}
+                                <button class="refusal-but" type="submit" name="accept_client" value="false">Отклонить</button>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                {% empty %}
+                    <p>Нет подтвержденных заказов.</p>
+                {% endfor %}
+            </div>  
+        <div id="activs" class="order-content">
+            <h2>Активные заказы</h2>
+            {% for order in active_orders %}
+                <div class="order-card">
+                    <div class="name-date">
+                        <div class="order-name"> Имя: <div class="db-t"> {{ order.client.name }}</div></div>
+                        <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                    </div>
+                    <div class="name-date">
+                        <div class="order-name">Автобус: <div class="db-t"> {{ order.bus.name }}</div></div>
+                    </div>
+                    <div class="order-desc">
+                        <div class="order-desc-title">
+                            Описание заказа:
+                        </div>
+                        <div class="order-desc-text">
+                        {{ order.description }}
+                        </div>
+                        </div>
+                        <div class="order-desc">
+                            <div class="order-desc-title">
+                                Ответ на заказ:
+                            </div>
+                            <div class="order-desc-text">
+                            {{ order.full_pirce }}
+                        </div>
+                        </div>
+                        <div class="name-date" style="justify-content: center; margin-right: 20px; padding-bottom: 20px;">
+                            <div class="order-name">Статус: <div class="db-t">{{ order.get_status_display }}</div></div>
+                        </div>
+                </div>
+            {% empty %}
+                <p>Нет активных заказов.</p>
+            {% endfor %}
+        </div>
+        <div id="end-order" class="order-content">
+            <h2>Завершённые заказы</h2>
+            {% for order in end_orders %}
+            <div class="order-card">
+                <div class="name-date">
+                    <div class="order-name"> Имя: <div class="db-t">{{ order.client.name }}</div></div>
+                    <div class="order-date"> Дата бронирования: <div class="db-t">{{ order.date }}</div></div>
+                </div>
+                <div class="name-date">
+                    <div class="order-name"> Автобус: <div class="db-t">{{ order.bus.name }}</div></div>
+                </div>
+                <div class="order-desc">
+                    <div class="order-desc-title"> Описание заказа:</div>
+                    <div class="order-desc-text">{{ order.description }}</div>
+                </div>
+                <div class="order-desc">
+                    <div class="order-desc-title"> Ответ на заказ:</div>
+                    <div class="order-desc-text">{{ order.full_pirce }}</div>
+                </div>
+                <div class="name-date" style="justify-content: center; margin-right: 20px; padding-bottom: 20px;">
+                    <div class="order-name"> Время закрытия заказа: <div class="db-t">{{ order.updated_at }}</div></div>
+                </div>
+                {% if not order.reviews.exists %}
+                <div class="review-button">
+                    <button class="btn open-modal" data-order-id="{{ order.id }}">
+                        Оставить отзыв и оценить
+                    </button>
+                </div>
+                {% endif %}
+                
+            </div>
+            {% empty %}
+            <p>Нет завершённых заказов</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="review-title">Оставьте отзыв</div>
+            <form id="review-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="order-id" name="order_id" value="">
+                <div class="reviw-start">
+                    <label for="stars">Оценка:</label>
+                    <div id="stars" class="stars">
+                        <span class="star" data-value="1"></span>
+                        <span class="star" data-value="2"></span>
+                        <span class="star" data-value="3"></span>
+                        <span class="star" data-value="4"></span>
+                        <span class="star" data-value="5"></span>
+                    </div>
+                    <input type="hidden" name="stars" id="stars-input" value="">
+                </div>
+                <div class="rewiw-text">
+                    <label for="text"></label>
+                    <textarea id="text" name="text" required placeholder="Ваш отзыв"></textarea>
+                </div>
+                <div class="rew-but">
+                <button type="submit">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="reviews" class="tab-content" style="display: none;">
+        <h2>Отзывы</h2>
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="reviews-all">
+                    <div class="order-card">
+                        <div class="name-date">
+                            <div class="order-name">
+                                Заказ: <div class="db-t">{{ review.order.date }} {{ review.order.bus }}</div>
+                            </div>
+                        </div>
+                        <div class="name-date" style="gap: 20px;">
+                            <div class="order-name">
+                                Транспортная компания: <div class="db-t">{{ review.transport_company.company_name }}</div>
+                            </div>
+                            <div class="order-date">
+                                Дата отзыва: <div class="db-t">{{ review.created_at }}</div>
+                            </div>
+                        </div>
+                        <div class="stars-rew">
+                            {% for star in review.stars|range_filter %}
+                            <div class="star-am">
+                                <img src="../static/media/client/ful-star.png" alt="звезда" class="stars-rew">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="order-desc">
+                            <div class="order-desc-text">{{ review.text }}</div>
+                        </div>
+                        <div class="out-mes">
+                        {% if review.response %}
+                            <div class="out-mes-text">Ответ компании:</div> 
+                            <div class="out-mes-comp">{{ review.response }}</div>
+                        {% else %}
+                            <p><em>Комментариев от компании нет.</em></p>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>У вас еще нет оставленных отзывов.</p>
+        {% endif %}
+    </div>
+    
+    
+            
+        
+        <div id="settings" class="tab-content" style="display: none;">
+            <h2>Обновление почты</h2>
+            <div class="line"></div>
+            <p>Ваш текущий адрес электронной почты <span class="email">{{ user.email }}</span>
+                <span class="status">Почта подтверждена</span>
+            </p>
+            <div class="set-info">
+            <span class="new-email">Введите новый адрес электронной почты</span>
+            <input type="text" id="email" name="email" value="{{ user.email }}">
+            <span class="hint">После нажатия кнопки "Обновить почту" Вам будет выслан код на новую почту для подтверждения</span>
+            <div style="margin-top: 10px;"> <!-- Добавьте отступ сверху -->
+                <button type="submit" class="submit-button" style="margin-left: 600px;">Обновить почту</button>
+            </div>
+           
+            <!-- Содержимое для настроек -->
+            <h3>Изменить пароль</h3> <!-- Добавьте отступ сверху -->
+            <div class="line"></div><br>
+            <input type="text" id="password" name="current_password" placeholder="Текущий пароль">
+            <span class="hint">Оставьте это поле пустым, если пароль не был задан раннее</span>
+            <input type="text" id="new_password" name="new_password" placeholder="Новый пароль">
+            <span class="hint">Пароль должен быть длинной не меньше 6 символов</span>
+            <input type="text" id="confirm_password" name="confirm_password" placeholder="Новый пароль еще раз">
+            <div style="margin-top: 10px;"> <!-- Добавьте отступ сверху -->
+                <button type="submit" class="submit-button" style="margin-left: 600px;">Изменить пароль</button>
+            </div>
+            </div>
+            <h3>Социальные сети</h3>
+            <div class="line"></div><br>
+            <span class="social">Привяжите свой аккаунт к одной из социальных сетей для более быстрого входа</span>
+            <div class="social-media">
+                <a href="https://www.vk.com" class="social-item">
+                    <img src="../static/media/client/VK.png" alt="VK">
+                    <span>VКонтакте</span>
+                </a>
+                <a href="https://www.yandex.ru" class="social-item">
+                    <img src="../static/media/client/Ynd.png" alt="Yandex">
+                    <span>Яндекс</span>
+                </a>
+                <a href="https://www.ok.ru" class="social-item">
+                    <img src="../static/media/client/Ok.png" alt="Ok">
+                    <span>Одноклассники</span>
+                </a>
+                <a href="https://www.mail.ru" class="social-item">
+                    <img src="../static/media/client/Mail.png" alt="Mail">
+                    <span>Mail.ru</span>
+                </a>
+            </div>
+            <div class="button-container">
+                <button class="delete-account-button">Удалить аккаунт</button>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/client/profile.js"></script>
+</body>
+</html>
